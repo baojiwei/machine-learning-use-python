@@ -1,6 +1,17 @@
 #-*-coding:utf-8-*- 
 from math import log
 
+#创建数据集
+def createDataSet():
+    dataSet=[[1,1,'yes'],
+             [1,1,'yes'],
+             [1,0,'no'],
+             [0,1,'no'],
+             [0,1,'no']]
+    labels=['no surfacing','flippers']
+    return dataSet, labels
+
+#计算香农熵
 def calcShannonEnt(dataSet):
     numEntries=len(dataSet)
     labelCounts={}
@@ -20,11 +31,14 @@ def calcShannonEnt(dataSet):
         shannonEnt-=prob*log(prob,2)
     return shannonEnt
 
-def createDataSet():
-    dataSet=[[1,1,'yes'],
-             [1,1,'yes'],
-             [1,0,'no'],
-             [0,1,'no'],
-             [0,1,'no']]
-    labels=['no surfacing','flippers']
-    return dataSet, labels
+#划分数据集
+def splitDataSet(dataSet,axis,value):
+    #创建新的list对象
+    retDataSet=[]
+    for featVec in dataSet:
+        if featVec[axis]==value:
+            #互换顺序
+            reduceFeatVec=fecVec[:axis]
+            reduceFeatVec.extend(featVec[axis+1:])
+            retDataSet.append(reducedFeatVec)
+            
