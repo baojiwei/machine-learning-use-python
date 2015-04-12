@@ -1,5 +1,6 @@
 #-*-coding:utf-8-*- 
 from math import log
+import operator
 
 #创建数据集
 def createDataSet():
@@ -38,7 +39,37 @@ def splitDataSet(dataSet,axis,value):
     for featVec in dataSet:
         if featVec[axis]==value:
             #互换顺序
-            reduceFeatVec=fecVec[:axis]
+            reduceFeatVec=featVec[:axis]
             reduceFeatVec.extend(featVec[axis+1:])
-            retDataSet.append(reducedFeatVec)
-            
+            retDataSet.append(reduceFeatVec)
+    return retDataSet
+
+def chooseBestFeatureToSplit(dataSet):
+    numFeatures=len(dataSet[0])-1
+    baseEntropy=calcShannonEnt(dataSet)
+    bestInfoGain=0.0
+    bestFeature=-1
+    for i in range(numFeatures):
+        featList=[example[i] for example in dataSet]
+        uniqueVals=set(featList)
+        newEntropy=0.0
+        #计算每种划分方式的信息熵
+        for value in uniqueVals:
+            subDataSet=splitDataSet(dataSet,i,value)
+            prob=len(subDataSet)/float(len(dataSet))
+            newEntropy+=prob*calcShannonEnt(subDataSet)
+        infoGain=baseEntropy-newEntropy
+        if (infoGain>bestInfoGain):
+            #计算最好的信息增益
+            bestInfoGain=infoGain
+            bestFeature=i
+    return bestFeature
+
+def majortyCnt(classList):
+    classCount={}
+    for vote in classList:
+        if vote not in classCount.keys():
+            classCount[vote]=0
+        classCount[vote]+=1
+    sortedClassCount=sorted(classCount.iteritems(),key=operator.itemgetter(1),reverse=True)
+    return sortedClassCount[0][0]
